@@ -38,29 +38,22 @@ const App = () => {
     setIsRunning(false)
     setIsWorking(true)
     setTimeLeft(workDuration * 60)
+    setWorkDuration(25)
+    setBreakDuration(5)
   }
   const handleWorkDuration = (e) => {
     const value = parseInt(e.target.value)
-    if (value >= 0) {
-      setIsWorking(value)
-      if (isWorking) {
-        setTimeLeft(value * 60)
-      }
-    }
+    setWorkDuration(value > 0 ? value : 1)
   }
   const handleBreakDuration = (e) => {
     const value = parseInt(e.target.value)
-    if (value >= 0) {
-      setBreakDuration(value)
-      if (!isWorking) {
-        setTimeLeft(value * 60)
-      }
-    }
+    setBreakDuration(value > 0 ? value : 1)
   }
   const handleSetDuration = () => {
-    if (!workDuration && !breakDuration) {
+    if (workDuration === 0 && breakDuration === 0) {
       setWorkDuration(25)
       setBreakDuration(5)
+      setTimeLeft(25 * 60)
       alert('Work duration and break duration cannot be 0 simultaneously')
     } else {
       setTimeLeft(isWorking ? workDuration * 60 : breakDuration * 60)
@@ -68,12 +61,18 @@ const App = () => {
   }
   return (
     <div id="main">
-      {isWorking ? <h2>Work-Time:-</h2> : <h2>Break-Time:-</h2>}
-      <div>{`${Math.floor(timeLeft / 60)
-        .toString()
-        .padStart(2, '0')}:${(timeLeft / 60)
-        .toString()
-        .padStart(2, '0')}`}</div>
+      {isWorking ? (
+        <h2>
+          Work-Time: {Math.floor(timeLeft / 60)}:
+          {('0' + (timeLeft % 60)).slice(-2)}
+        </h2>
+      ) : (
+        <h2>
+          Break-Time: {Math.floor(timeLeft / 60)}:
+          {('0' + (timeLeft % 60)).slice(-2)}
+        </h2>
+      )}
+
       <button data-testid="start-btn" onClick={startTimer} disabled={isRunning}>
         Start
       </button>
